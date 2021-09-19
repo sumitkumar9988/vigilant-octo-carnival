@@ -17,18 +17,17 @@ mongoose
   const users = [
     {
      
-      domain: 'www.createtailwind.site',
+      domain: 'createtailwind.site',
       message:'This website is create tailwind site'
     },
     {
-      domain: 'www.collegeclick.space',
+      domain: 'collegeclick.space',
       message:'This website is www.collegeclick.space'
     },
   ]
 
   app.use((req, res, next) => {
     if (req.hostname === 'pfolio.site') {
-      res.send('Site is pfolio.site')
       return next();
     }
   
@@ -40,15 +39,15 @@ mongoose
     return res.send(`${user.message}`);
   });
 
-router.get("/",async (req, res) => {
-  res.json({
-    succuss: "yup!!!"
+  app.get("/", (req, res) => {
+    return res.status(200).json({
+      status: "success",
+    });
   });
-});
 
 
 
-app.use(`/`, router);
+// app.use(`/`, router);
 const PORT=process.env.PORT||8000
 app.listen(PORT,(req,res)=>{
   console.log('Listning on Port',PORT)
