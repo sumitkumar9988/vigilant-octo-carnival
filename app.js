@@ -26,18 +26,18 @@ mongoose
     },
   ]
 
-  app.use((req, res, next) => {
-    if (req.hostname === 'pfolio.site') {
-      return next();
-    }
+  // app.use((req, res, next) => {
+  //   if (req.hostname === 'pfolio.site') {
+  //     return next();
+  //   }
   
-    const user = users.find(user => user.domain === req.hostname);
-    if (!user) {
-      return res.sendStatus(404);
-    }
+  //   const user = users.find(user => user.domain === req.hostname);
+  //   if (!user) {
+  //     return res.sendStatus(404);
+  //   }
   
-    return res.send(`${user.message}`);
-  });
+  //   return res.send(`${user.message}`);
+  // });
 
   app.get("/", (req, res) => {
     return res.status(200).json({
