@@ -4,7 +4,7 @@
   "description": "",
   "main": "app.js",
   "scripts": {
-    "start": "nodemon app"
+    "start": "supervisor  app.js"
   },
   "author": "",
   "license": "ISC",
@@ -23,10 +23,10 @@
     "le-challenge-fs": "^2.0.9",
     "le-store-certbot": "^2.2.3",
     "le-store-s3": "^1.0.4",
-    "mongoose": "^6.0.4",
     "nodemon": "^2.0.12",
     "path": "^0.12.7",
     "redirect-https": "^1.3.1",
-    "serverless-http": "^2.7.0"
+    "serverless-http": "^2.7.0",
+    "supervisor": "^0.12.0"
   }
 }
