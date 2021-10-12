@@ -4,7 +4,7 @@
   "description": "",
   "main": "app.js",
   "scripts": {
-    "start": "supervisor  app.js"
+    "start": "sudo supervisor  app.js"
   },
   "author": "",
   "license": "ISC",
