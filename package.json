@@ -1,5 +1,5 @@
 {
-  "name": "custom-domain-for-users",
+  "name": "customdomain",
   "version": "1.0.0",
   "description": "",
   "main": "app.js",
@@ -9,11 +9,24 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@greenlock/manager": "^3.1.0",
+    "acme-http-01-standalone": "^3.0.5",
+    "axios": "^0.22.0",
     "cors": "^2.8.5",
     "dotenv": "^10.0.0",
     "express": "^4.17.1",
+    "greenlock": "^4.0.4",
+    "greenlock-express": "^2.0.11",
+    "greenlock-store-fs": "^3.2.2",
+    "http-proxy-middleware": "^2.0.1",
+    "le-acme-core": "^2.1.4",
+    "le-challenge-fs": "^2.0.9",
+    "le-store-certbot": "^2.2.3",
+    "le-store-s3": "^1.0.4",
     "mongoose": "^6.0.4",
     "nodemon": "^2.0.12",
+    "path": "^0.12.7",
+    "redirect-https": "^1.3.1",
     "serverless-http": "^2.7.0"
   }
 }

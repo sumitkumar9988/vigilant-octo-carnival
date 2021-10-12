@@ -1,119 +1,55 @@
-const express = require("express");
-const dotenv = require("dotenv");
-const mongoose=require('mongoose');
-const cors = require('cors');
-const User = require('./Models/userModel');
-const app = express();
-const router = express.Router();
-dotenv.config();
+'use strict';
 
-app.use(cors());
-app.use(express.json())
-mongoose
-  .connect(process.env.DATABASE)
-  .then(() => console.log("DB connection successful!"))
-  .catch((err) => console.log(err));
+// returns an instance of node-greenlock with additional helper methods
+var lex = require('greenlock-express').create({
+  // set to https://acme-v01.api.letsencrypt.org/directory in production
+  server: 'https://acme-v01.api.letsencrypt.org/directory'
 
-  const users = [
-    {
-     
-      domain: 'createtailwind.site',
-      message:'This website is create tailwind site'
-    },
-    {
-      domain: 'collegeclick.space',
-      message:'This website is www.collegeclick.space'
-    },
-  ]
+// If you wish to replace the default plugins, you may do so here
+//
+, challenges: { 'http-01': require('le-challenge-fs').create({ webrootPath: '/tmp/acme-challenges' }) }
+, store: require('le-store-certbot').create({ webrootPath: '/tmp/acme-challenges' })
 
-  // app.use((req, res, next) => {
-  //   if (req.hostname === 'pfolio.site') {
-  //     return next();
-  //   }
-  
-  //   const user = users.find(user => user.domain === req.hostname);
-  //   if (!user) {
-  //     return res.sendStatus(404);
-  //   }
-  
-  //   return res.send(`${user.message}`);
-  // });
+// You probably wouldn't need to replace the default sni handler
+// See https://git.daplie.com/Daplie/le-sni-auto if you think you do
+//, sni: require('le-sni-auto').create({})
 
-  app.get("/", (req, res) => {
-    return res.status(200).json({
-      status: "success",
-    });
-  });
+, approveDomains: approveDomains
+});
+function approveDomains(opts, certs, cb) {
+  // This is where you check your database and associated
+  // email addresses with domains and agreements and such
+
+  // The domains being approved for the first time are listed in opts.domains
+  // Certs being renewed are listed in certs.altnames
+  if (certs) {
+    opts.domains = certs.altnames;
+  }
+  else {
+    opts.email = 'brianc@palaver.net';
+    opts.agreeTos = true;
+    opts.domains = ['www.white-county-history.org', 'white-county-history.org'];
+  }
+
+  // NOTE: you can also change other options such as `challengeType` and `challenge`
+  // opts.challengeType = 'http-01';
+  // opts.challenge = require('le-challenge-fs').create({});
+
+  cb(null, { options: opts, certs: certs });
+}
+// handles acme-challenge and redirects to https
+require('http').createServer(lex.middleware(require('redirect-https')())).listen(80, function () {
+  console.log("Listening for ACME http-01 challenges on", this.address());
+});
 
 
 
-// app.use(`/`, router);
-const PORT=process.env.PORT||8000
-app.listen(PORT,(req,res)=>{
-  console.log('Listning on Port',PORT)
-})
+var app = require('express')();
+app.use('/', function (req, res) {
+  res.end('Hello, World!');
+});
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-//   router.post("/createfile", async (req, res) => {
-//       try{
-//         const {name,folder,data,path}=req.body;
-//         await File.create({
-//           name,folder  ,path,data
-//         })    
-//         res.status(201).json({
-//           succuss: "true"
-//         });
-//       }catch(err){
-//         res.status(404).json({
-//             succuss: "fail",
-//             message:err
-//           });
-//       }
-    
-//   });
-
-//   router.get("/file",async (req, res) => {
-//     try{
-//         const file=await File.find({}).populate('folder');
-//       res.status(201).json({
-//         succuss: "true",
-//         file:file
-//       });
-//     }catch(err){
-//       res.status(404).json({
-//           succuss: "fail",
-//           message:err
-//         });
-//     }})
-
-//     router.get("/file/:id",async (req, res) => {
-//         const id=req.params.id;
-//         try{
-    
-//             const file=await File.findById(id).populate('folder');
-//             res.status(201).json({
-//               succuss: "true",
-//               file:file
-//             });
-//         }catch(err){
-//           res.status(404).json({
-//               succuss: "fail",
-//               message:err
-//             });
-//         }
-// });
+// handles your app
+require('https').createServer(lex.httpsOptions, lex.middleware(app)).listen(443, function () {
+  console.log("Listening for ACME tls-sni-01 challenges and serve app on", this.address());
+});
